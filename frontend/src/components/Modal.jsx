@@ -3,24 +3,23 @@ import { useAppContext } from "../context/Context";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from 'framer-motion';
 import blankPic from "../assets/logo.png"
-import google from "../assets/google_bg.png"
-import email from "../assets/Gmail-logo.png"
 
 
 
 
-const Login = () => {
+
+const Modal = (seeModal, setSeeModal) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { toggleActive,token, setToken, showModal, setShowModal } = useAppContext();
   const navigate = useNavigate(); 
   
-  // useEffect(() => {
-  //   if (token) {
-  //     navigate('/'); 
-  //   }
-  // }, [token, navigate]);
+  useEffect(() => {
+    if (token) {
+      navigate('/'); 
+    }
+  }, [token, navigate]);
 
   const submitLogin = async () => {
     try {
@@ -35,6 +34,7 @@ const Login = () => {
       if (data.access) {
         localStorage.setItem('token', data.access);
         setToken(data.access);
+        navigate('/');
       } else {
         setErrorMessage("Username or password did not work.");
       }
@@ -46,38 +46,30 @@ const Login = () => {
 
   const handleModal = () => {
     setShowModal(false)
-    localStorage.removeItem('token')
+    navigate('/')
   };
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     submitLogin();
-    setShowModal(false)
-    setUsername('');
-    setPassword('');
   };
 
-  const backdrop = {
+  const loginVariants = {
     hidden:{
-        opacity:0,
-        y:-250
+        opacity:0
     },
     visible:{
-        opacity:1,
-        y:0,
-        transition: {
-          type:'tween'
-        }
+        opacity:1
     }
   }
-  const myLogin = {
+  const myModal = {
     hidden: {
         y: '-100vh',
         opacity: 0
     },
     visible: {
-        y: '0',
+        y: '200px',
         opacity: 1,
         Transition: {
             delay: 0.5
@@ -87,18 +79,18 @@ const Login = () => {
 
   return (
     <AnimatePresence mode="wait">
-        {showModal && (
+        {seeModal && (
             <motion.div
-                variants={backdrop}
+                variants={loginVariants}
                 initial='hidden'
                 animate='visible'
-                exit='hidden'
+
                 // className="fixed top-0 bottom-0 right-0 left-0  p-10"
-                className="text-zinc-100 fixed inset-0 bg-blue-900 bg-opacity-50 backdrop-filter 
-                backdrop-blur-lg z-50 flex justify-center flex-col items-center"
+                className="h-screen text-white inset-0 bg-gray-600 bg-opacity-50 backdrop-filter 
+                backdrop-blur-sm z-50 flex justify-center flex-col items-center overflow-hidden fixed"
             >
             <div className="fixed top-0 left-5">
-              <div className=' flex flex-row items-center gap-1'>
+              <div className='mt-5 flex flex-row items-center'>
               <Link to="/">
               <img onClick={toggleActive} className='w-10 h-10 rounded-full' src={ blankPic } />
               </Link>
@@ -108,27 +100,10 @@ const Login = () => {
             </div>
             </div>
                 <motion.form 
-                variants={myLogin}
+                variants={myModal}
                 onSubmit={handleSubmit}
-                className="bg-gradient-to-r from-black via-black to-blue-900 p-10 flex flex-col rounded-lg gap-2">
-                  <div>
-                  <h1 className=" text-orange-500 text-3xl">Welcome back!</h1>
-                  <p className="text-sm">Login with your account</p>
-                  </div>
-
-
-                  <div className="flex items-center text-zinc-900 bg-zinc-300 rounded-lg">
-                    <button className='flex flex-row justify-center gap-2 text-md  p-1 w-full border  hover:border-white border-[#004D74]  rounded-lg transition duration-300 ease-in-out' onClick={handleModal}>
-                    <img onClick={toggleActive} className='w-5 h-5' src={ google } />
-                      <p>Sign in with Google</p>
-                    </button>
-                  </div>
-                  <div className="text-zinc-900 flex items-center bg-zinc-300 rounded-lg">
-                    <button className=' flex flex-row justify-center gap-2 text-md  p-1 w-full border  hover:border-white border-[#004D74]  rounded-lg transition duration-300 ease-in-out' onClick={handleModal}>
-                    <img onClick={toggleActive} className=' h-5' src={ email } />
-                      <p>Sign in with Email</p>
-                    </button>
-                  </div>
+                className="bg-gradient-to-r from-black via-black to-blue-900 p-10 flex flex-col rounded-lg text-white">
+                    <h1 className="mb-5 text-orange-500 text-3xl">Login</h1>
                     <div className="mb-5">
                       <label className="text-lg">Username:</label>
                       <div className="">
@@ -137,11 +112,11 @@ const Login = () => {
                           placeholder="Enter username" 
                           value={username} 
                           onChange={(e) => setUsername(e.target.value)} 
-                          className="p-2 rounded-lg bg-gradient-to-r from-black via-black to-blue-900"
+                          className="p-2 rounded-lg"
                           />
                       </div>
                     </div>
-                    <div className="">
+                    <div className="mb-5">
                       <label className="text-lg">Password:</label>
                       <div className="">
                           <input 
@@ -149,7 +124,7 @@ const Login = () => {
                           placeholder="Enter Password:" 
                           value={password} 
                           onChange={(e) => setPassword(e.target.value)} 
-                          className="p-2 rounded-lg bg-gradient-to-r from-black via-black to-blue-900"
+                          className="p-2 rounded-lg"
                           />
                       </div>
                     </div>
@@ -166,4 +141,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Modal;

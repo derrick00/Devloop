@@ -7,7 +7,10 @@ export const AppProvider = ({ children }) => {
   const [isActive, setIsActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState("");
+  const [showLoader, setShowLoader] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
 
+  
 
 
   const toggleActive = () => {
@@ -22,7 +25,8 @@ export const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={{ isActive, toggleActive, token, 
-    setToken, logout,showModal ,setShowModal, user, setUser }}>,  
+    setToken, logout,showModal ,setShowModal, user, setUser,
+     showLoader, setShowLoader, showBanner, setShowBanner }}>
       {children}
     </AppContext.Provider>
   );
